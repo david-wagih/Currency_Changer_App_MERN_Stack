@@ -1,27 +1,33 @@
 import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import connectDB from "./config/db";
-import bodyParser from "body-parser";
-import userRouter from "./routes/userRoutes";
+import "dotenv/config";
+import mongoose from "mongoose";
+import userRouter from "./router/userRouter";
+import requireLogin from "./middlewares/requireLogin";
 
 const app = express();
-dotenv.config();
-connectDB();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+const port = process.env.PORT || 8000;
+
+mongoose.connect(`${process.env.MONGO_URI}`, (err) => {
+  if (err) console.log(err);
+  else console.log("Connected to DB");
+});
+
 app.use(express.json());
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
 
 app.use("/api/users", userRouter);
 
-const PORT = process.env.PORT;
+app.use(requireLogin);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    res.status(500).send("Internal server error");
+  }
+);
+
+app.listen(`${port}`, () => console.log(`listening to port ${port}`));
