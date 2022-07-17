@@ -1,15 +1,16 @@
 import Login from "@components/Login";
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 
-export default function Home(props: any) {
-  const isLoggedIn = props.isLoggedIn;
+export default function Home() {
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+
   return (
     <div
       className="h-screen bg-gray-800
       flex justify-center items-center
     "
     >
-      {isLoggedIn ? (
+      {cookies.token ? (
         <div className="text-white text-center text-5xl font-bold m-10">
           You are logged in!
         </div>
@@ -18,20 +19,4 @@ export default function Home(props: any) {
       )}
     </div>
   );
-}
-
-export async function getServerSideProps(context) {
-  const token = Cookies.get("token");
-  if (token) {
-    return {
-      props: {
-        isLoggedIn: true,
-      },
-    };
-  }
-  return {
-    props: {
-      isLoggedIn: false,
-    },
-  };
 }

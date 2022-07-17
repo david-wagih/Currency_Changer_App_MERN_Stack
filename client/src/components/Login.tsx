@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
+import { useCookies } from "react-cookie";
 
 function Login() {
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -21,8 +22,9 @@ function Login() {
         },
       });
       console.log(response);
+      setCookie("token", response.data.token, { path: "/" });
+      window.location.reload();
       if (response) {
-        Cookies.set("token", response.data.token);
       } else {
         console.log(response);
       }
