@@ -1,7 +1,9 @@
 import Login from "@components/Login";
 import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
   return (
@@ -14,6 +16,12 @@ export default function Home() {
             onClick={() => removeCookie("token")}
           >
             Logout
+          </button>
+          <button
+            className="px-4 py-2 font-bold text-white bg-green-500 rounded hover:bg-green-700"
+            onClick={() => router.push("/Currency")}
+          >
+            Change Currency
           </button>
         </div>
       ) : (
