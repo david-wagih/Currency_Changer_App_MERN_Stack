@@ -8,23 +8,26 @@ function Login() {
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    const response = await axios.post(
-      "http://localhost:8000/api/users/login",
-      {
-        email,
-        password,
-      },
-      {
+    try {
+      const response = await axios({
+        method: "post",
+        url: "api/users/login",
+        data: {
+          email,
+          password,
+        },
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         },
+      });
+      console.log(response);
+      if (response) {
+        Cookies.set("token", response.data.token);
+      } else {
+        console.log(response);
       }
-    );
-    console.log(response);
-    if (response) {
-      Cookies.set("token", response.data.token);
+    } catch (err) {
+      console.log(err);
     }
   };
   return (

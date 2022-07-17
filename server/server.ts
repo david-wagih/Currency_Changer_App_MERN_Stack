@@ -3,6 +3,7 @@ import "dotenv/config";
 import userRouter from "./router/userRouter";
 import requireLogin from "./middlewares/requireLogin";
 import connectDB from "./config/db";
+import cors from "cors";
 
 const app = express();
 
@@ -11,6 +12,8 @@ const port = process.env.PORT || 8000;
 connectDB();
 
 app.use(express.json());
+
+app.use(cors());
 
 app.use("/api/users", userRouter);
 
