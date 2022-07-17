@@ -5,15 +5,9 @@ export default function Home() {
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
   return (
-    <div
-      className="h-screen bg-gray-800
-      flex justify-center items-center
-    "
-    >
+    <div className="flex items-center justify-center h-screen bg-gray-800 ">
       {cookies.token ? (
-        <div className="text-white text-center text-5xl font-bold m-10">
-          You are logged in!
-        </div>
+        <div className="text-5xl text-white ">You are logged in!</div>
       ) : (
         <Login />
       )}
