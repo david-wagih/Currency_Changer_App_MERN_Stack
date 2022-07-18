@@ -4,6 +4,7 @@ import userRouter from "./router/userRouter";
 import requireLogin from "./middlewares/requireLogin";
 import connectDB from "./config/db";
 import cors from "cors";
+import FavoritesRouter from "./router/FavoritesRouter";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/users", userRouter);
+app.use("/api/favorites", FavoritesRouter);
 
 app.use(requireLogin);
 

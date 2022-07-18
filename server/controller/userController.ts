@@ -70,7 +70,10 @@ const loginUser = async (
         message: "Password is incorrect",
       });
     else {
-      const token = jwt.sign({ id: user._id }, `${process.env.JWT_SECRET}`);
+      const token = jwt.sign(
+        { email: user.email },
+        `${process.env.JWT_SECRET}`
+      );
       return res.status(201).json({
         success: true,
         token,

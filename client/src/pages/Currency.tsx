@@ -1,9 +1,5 @@
+import FavoritesBag from "@components/FavoritesBag";
 import React, { useEffect, useState } from "react";
-
-// "https://api.apilayer.com/fixer/latest?symbols={symbols}&base={base}", requestOptions)
-//   .then(response => response.text())
-//   .then(result => console.log(result))
-//   .catch(error => console.log('error', error));
 
 function Currency(props: any) {
   const options = props.currencyOptions;
@@ -15,7 +11,6 @@ function Currency(props: any) {
   const [rate, setRate] = useState(0);
 
   useEffect(() => {
-    console.log(options);
     const takeOnlyKeys = () => {
       if (options) {
         const keys = Object.keys(options);
@@ -58,12 +53,15 @@ function Currency(props: any) {
     setResult(data.result);
   };
   return (
-    <>
-      <div className="flex flex-row items-center justify-center h-screen p-10 space-x-10 bg-gray-800">
+    <div className="flex flex-row bg-gray-800 justify-evenly items-centerp-4 ">
+      <div className="flex flex-col items-center justify-center ">
+        <FavoritesBag />
+      </div>
+      <div className="flex flex-col items-center justify-center h-screen p-10 space-x-10 bg-gray-800">
         <div className="flex flex-row items-center justify-center h-screen space-x-5 bg-gray-800 ">
           <label className="text-xl text-white">From</label>
           <select
-            className="text-xl text-white bg-blue-800 rounded"
+            className="text-xl text-black bg-white rounded"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
           >
@@ -77,7 +75,7 @@ function Currency(props: any) {
         <div className="flex flex-row items-center justify-center h-screen space-x-5 bg-gray-800">
           <label className="text-xl text-white">To</label>
           <select
-            className="text-xl text-white bg-blue-800 rounded"
+            className="text-xl text-black bg-white rounded"
             value={to}
             onChange={(e) => setTo(e.target.value)}
           >
@@ -118,7 +116,7 @@ function Currency(props: any) {
           Convert
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
