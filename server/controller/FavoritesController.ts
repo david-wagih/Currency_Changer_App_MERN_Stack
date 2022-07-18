@@ -33,7 +33,7 @@ const getAllFavoritesByEmail = async (
     });
     return res.status(200).json({
       success: true,
-      data : favorites,
+      data: favorites,
     });
   } catch (error) {
     next(error);

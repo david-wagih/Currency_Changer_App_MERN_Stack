@@ -1,57 +1,49 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
-import jwt from "jsonwebtoken";
 
 function FavoritesBag(props: any) {
-  // @ts-ignore
-  const Myfavorites = props?.favorites;
-  const email = props?.email;
-  console.log(email);
+  const email = props.email;
 
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    setFavorites(Myfavorites);
-    console.log(favorites);
+    const getFavorites = async () => {
+      const myFavorites = await axios({
+        method: "post",
+        url: "api/favorites/getAllFavorites",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: {
+          email: email,
+        },
+      });
+      setFavorites(myFavorites.data.data);
+    };
+    getFavorites();
   }, []);
   return (
     <div className="flex flex-col">
       <h1 className="mb-4 text-2xl font-bold text-center text-white">
         My Favorites Bag
       </h1>
-      <ul>
-        {favorites?.map((favorite) => (
-          <li key={favorite}>{favorite}</li>
+      <div>
+        {favorites.map((favorite: any) => (
+          <div
+            key={favorite._id}
+            className="flex flex-col items-center justify-between"
+          >
+            <div className="flex flex-row items-center justify-center bg-green-800 ">
+              <p className="text-xl text-white ">
+                {favorite.baseCurrency}
+                {"  "} to {"   "} {favorite.targetCurrency}
+              </p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
-
-  const token = cookies.token;
-  // @ts-ignore
-  const email = jwt.decode(token)?.email;
-  const myFavorites = await axios({
-    method: "post",
-    url: "api/favorites/getAllFavorites",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      email,
-    },
-  });
-
-  return {
-    props: {
-      favorites: myFavorites.data,
-      email: email,
-    },
-  };
 }
 
 export default FavoritesBag;

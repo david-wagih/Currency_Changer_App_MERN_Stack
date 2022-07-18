@@ -1,7 +1,10 @@
 import FavoritesBag from "@components/FavoritesBag";
 import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import jwt from "jsonwebtoken";
+import axios from "axios";
 
-function Currency(props: any) {
+const Currency = (props: any) => {
   const options = props.currencyOptions;
   const [to, setTo] = useState("USD");
   const [from, setFrom] = useState("EUR");
@@ -9,8 +12,17 @@ function Currency(props: any) {
   const [result, setResult] = useState(0);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [rate, setRate] = useState(0);
+  const [email, setEmail] = useState("");
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
 
   useEffect(() => {
+    const decodeToken = async () => {
+      const token = cookies.token;
+      // @ts-ignore
+      const email = jwt.decode(token)?.email;
+      setEmail(email);
+    };
+    decodeToken();
     const takeOnlyKeys = () => {
       if (options) {
         const keys = Object.keys(options);
@@ -52,10 +64,26 @@ function Currency(props: any) {
     const data = await response.json();
     setResult(data.result);
   };
+
+  const handleAddtoFavorites = async () => {
+    const response = await axios({
+      method: "post",
+      url: "api/favorites/addToFavorites",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        email: email,
+        baseCurrency: from,
+        targetCurrency: to,
+      },
+    });
+    console.log(response.data);
+  };
   return (
     <div className="flex flex-row bg-gray-800 justify-evenly items-centerp-4 ">
       <div className="flex flex-col items-center justify-center ">
-        <FavoritesBag />
+        <FavoritesBag email={email} />
       </div>
       <div className="flex flex-col items-center justify-center h-screen p-10 space-x-10 bg-gray-800">
         <div className="flex flex-row items-center justify-center h-screen space-x-5 bg-gray-800 ">
@@ -109,16 +137,24 @@ function Currency(props: any) {
             {rate}
           </p>
         </div>
-        <button
-          className="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
-          onClick={convert}
-        >
-          Convert
-        </button>
+        <div className="flex flex-row items-center justify-center h-screen space-x-5 bg-gray-800 ">
+          <button
+            className="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+            onClick={convert}
+          >
+            Convert
+          </button>
+          <button
+            className="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700"
+            onClick={handleAddtoFavorites}
+          >
+            Add to favorites
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export async function getServerSideProps() {
   const currencyOptions = await fetch(
